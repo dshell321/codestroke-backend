@@ -52,6 +52,7 @@ def register_clinician_quick():
             jsonify(
                 {
                     "success": False,
+                    "request" : "POST:register_clinician_quick",
                     "error_type": "request",
                     "debugmsg": "Must include email",
                 }
@@ -63,6 +64,7 @@ def register_clinician_quick():
             jsonify(
                 {
                     "success": False,
+                    "request" : "POST:register_clinician_quick",
                     "error_type": "request",
                     "debugmsg": "Must include password",
                 }
@@ -74,7 +76,7 @@ def register_clinician_quick():
     args["pairing_code"] = pairing_code
     add_result = ext.add_user_("clinicians", args)
     if add_result[1]:
-        return jsonify({"success": True, "pairing_code": pairing_code})
+        return jsonify({"success": True, "request" : "POST:register_clinician_quick", "pairing_code": pairing_code})
     return add_result[0]
 
 
@@ -88,6 +90,7 @@ def register_clinician_TEMP():
             jsonify(
                 {
                     "success": False,
+                    "request" : "POST:register_clinician_TEMP",
                     "error_type": "request",
                     "debugmsg": "Must include email",
                 }
@@ -122,7 +125,7 @@ def register_clinician_TEMP():
     if not add_result[1]:
         return add_result[0]
 
-    return jsonify({"qrstring": qrstring})
+    return jsonify({"success:" True, "request" : "POST:register_clinician_TEMP", "qrstring": qrstring})
 
 
 @clinicians.route("/register/", methods=["POST"])
@@ -135,6 +138,7 @@ def register_clinician():
                 jsonify(
                     {
                         "success": False,
+                        "request" : "POST:register_clinician",
                         "error_type": "request",
                         "debugmsg": "Must include email",
                     }
@@ -214,10 +218,10 @@ def register_clinician():
             app.config.get("EMAIL_USER"), inputs.get("email"), msg.as_string()
         )
         server.close()
-        return jsonify({"success": True, "destination": inputs.get("email")})
+        return jsonify({"success": True, "request" : "POST:register_clinician", "destination": inputs.get("email")})
     except Exception as e:
         return (
-            jsonify({"success": False, "debug_py_err": str(e), "e_args": str(e.args)}),
+            jsonify({"success": False, "request" : "POST:register_clinician", "debug_py_err": str(e), "e_args": str(e.args)}),
             500,
         )
 
@@ -236,6 +240,7 @@ def pair_clinician():
             jsonify(
                 {
                     "success": False,
+                    "request" : "POST:pair_clinician",
                     "error_type": "request",
                     "debugmsg": "Username or password not given.",
                 }
@@ -250,6 +255,7 @@ def pair_clinician():
             jsonify(
                 {
                     "success": False,
+                    "request" : "POST:pair_clinician",
                     "error_type": "checkpoint",
                     "debugmsg": "Backend details did not match",
                 }
@@ -279,12 +285,13 @@ def pair_clinician():
             # print(totp.now())
             # print("TOTP END")
             return jsonify(
-                {"success": True, "shared_secret": shared_secret, "token": totp.now()}
+                {"success": True, "request" : "POST:pair_clinician", "shared_secret": shared_secret, "token": totp.now()}
             )
     return (
         jsonify(
             {
                 "success": False,
+                "request" : "POST:pair_clinician",
                 "error_type": "checkpoint",
                 "debugmsg": "Input parameters did not pass",
             }
@@ -481,6 +488,7 @@ def set_password(user_info):
             jsonify(
                 {
                     "success": False,
+                    "request" : "POST:set_password",
                     "error_type": "request",
                     "debugmsg": "No new password given.",
                 }
@@ -494,10 +502,10 @@ def set_password(user_info):
     )
     # print(user_info.get('username'))
     mysql.connection.commit()
-    return jsonify({"success": True})
+    return jsonify({"success": True, "request" : "POST:set_password"})
 
 
 @clinicians.route("/profile/", methods=["GET"])
 @requires_clinician
 def user_verify(user_info):
-    return jsonify({"success": True, "user_info": user_info})
+    return jsonify({"success": True, "request" : "POST:user_verify", "user_info": user_info})

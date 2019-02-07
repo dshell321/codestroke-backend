@@ -26,6 +26,7 @@ def edit_case_info(info_table, case_id, user_info):
             jsonify(
                 {
                     "success": False,
+                    "request" : "PUT:edit_case_info:" + info_table,
                     "error_type": "request",
                     "debugmsg": "No data in request.",
                 }
@@ -48,7 +49,7 @@ def edit_case_info(info_table, case_id, user_info):
     qargs = hooks.put(info_table, case_id, qargs, prior)
     if not qargs:
         # print("NO CHANGE")
-        return jsonify({"success": True, "message": "no change"})
+        return jsonify({"success": True, "request" : "PUT:edit_case_info:" + info_table, "message": "no change"})
     query = ext.update_(qargs)
     query_string = "update {} ".format(info_table) + query[0] + " where case_id=%s"
     # print(query_string)
@@ -67,7 +68,7 @@ def edit_case_info(info_table, case_id, user_info):
 
     log_event("edit", qargs, meta, user_info)
 
-    return jsonify({"success": True, "debugmsg": "added"})
+    return jsonify({"success": True, "request" : "PUT:edit_case_info:" + info_table, "debugmsg": "added"})
 
     # except MySQLdb.Error as e:
     #     print(e)
@@ -105,5 +106,6 @@ def get_case_info(info_table, case_id, user_info):
     #    results['google_distance_api_key'] = app.config.get('GOOGLE_DISTANCE_API_KEY')
 
     results["success"] = True
+    results["request"] = "PUT:edit_case_info:" + info_table
 
     return jsonify(results)

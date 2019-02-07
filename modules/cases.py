@@ -36,6 +36,7 @@ def add_case(user_info):
                 jsonify(
                     {
                         "success": False,
+                        "request" : "POST:add_case",
                         "error_type": "request",
                         "debugmsg": "No data in request.",
                     }
@@ -125,14 +126,15 @@ def add_case(user_info):
             return jsonify(
                 {
                     "success": True,
+                    "request" : "POST:add_case",
                     "case_id": case_id,
                     "debugmsg": "Notification not sent.",
                 }
             )
 
-        return jsonify({"success": True, "case_id": case_id})
+        return jsonify({"success": True, "request" : "POST:add_case", "result": case_id})
     except Exception as e:
-        return jsonify({"success": False, "debug_info": str(e)}), 500
+        return jsonify({"success": False, "request" : "POST:add_case", "debug_info": str(e)}), 500
 
 
 @cases.route("/delete/<int:case_id>/", methods=(["DELETE"]))
@@ -157,7 +159,7 @@ def delete_case(case_id, user_info):
 
     log_event("delete", {}, meta, user_info)
 
-    return jsonify({"success": True})
+    return jsonify({"success": True, "request" : "DELETE:delete_case"})
 
 
 @cases.route("/acknowledge/<int:case_id>/", methods=(["POST"]))
@@ -213,4 +215,4 @@ def acknowledge_case(case_id, user_info):
     }
     log_event("acknowledge", args_ack, meta, user_info)
 
-    return jsonify({"success": True})
+    return jsonify({"success": True, "request" : "POST:acknowledge_case"})
